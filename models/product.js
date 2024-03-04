@@ -1,23 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const rootDir = require('../util/path');
+const pool = require('../util/database');
 
 const Cart = require('./cart');
-
-const file = path.join(
-  rootDir,
-  'data',
-  'products.json'
-);
-
-const getProductsFromFile = (callback) => {
-  fs.readFile(file, (err, fileContent) => {
-    if (err) {
-      return callback([]);
-    }
-    callback(JSON.parse(fileContent));
-  });
-}
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
@@ -26,48 +9,27 @@ module.exports = class Product {
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
+    this.conn;
   }
 
-  save() {
-    getProductsFromFile(products => {
-      if (this.id) {
-        const existingProductIndex = products.findIndex(product => product.id === this.id);
-        const updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
-        fs.writeFile(file, JSON.stringify(updatedProducts), (err) => {
-          console.log(err);
-        });
-      } else {
-        this.id = Math.random().toString();
-        products.push(this);
-        fs.writeFile(file, JSON.stringify(products), (err) => {
-          console.log(err);
-        });
-      }
-    });
+  async save() {
+    this.conn = await pool.getConnection();
+    return this.conn.execute("INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?);",
+      [this.title, this.price, this.imageUrl, this.description]
+    );
   }
 
   static deleteById(id) {
-    getProductsFromFile(products => {
-      const product = products.find(product => product.id === id);
-      const updatedProducts = products.filter(product => product.id !== id);
-      fs.writeFile(file, JSON.stringify(updatedProducts), (err) => {
-        console.log(err);
-        if (!err) {
-          Cart.deleteProduct(id, product.price);
-        }
-      });
-    });
+    
   }
 
-  static fetchAll(callback) {
-    getProductsFromFile(callback);
+  static async fetchAll() {
+    this.conn = await pool.getConnection();
+    return this.conn.query('SELECT * FROM products');
   }
 
-  static findById(id, callback) {
-    getProductsFromFile(products => {
-      const product = products.find(product => product.id == id);
-      callback(product);
-    });
+  static async findById(id) {
+    this.conn = await pool.getConnection();
+    return this.conn.query('SELECT * FROM products WHERE products.id = ?', [id]);
   }
 }
