@@ -1,35 +1,27 @@
-const pool = require('../util/database');
+const Sequelize = require('sequelize');
 
-const Cart = require('./cart');
+const sequelize = require('../util/database.js');
 
-module.exports = class Product {
-  constructor(id, title, imageUrl, description, price) {
-    this.id = id;
-    this.title = title;
-    this.imageUrl = imageUrl;
-    this.description = description;
-    this.price = price;
-    this.conn;
+const Product = sequelize.define('product', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  },
+  title: Sequelize.STRING,
+  price: {
+    type: Sequelize.DOUBLE,
+    allowNull: false
+  },
+  imageUrl: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  description: {
+    type: Sequelize.STRING,
+    allowNull: false
   }
+});
 
-  async save() {
-    this.conn = await pool.getConnection();
-    return this.conn.execute("INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?);",
-      [this.title, this.price, this.imageUrl, this.description]
-    );
-  }
-
-  static deleteById(id) {
-    
-  }
-
-  static async fetchAll() {
-    this.conn = await pool.getConnection();
-    return this.conn.query('SELECT * FROM products');
-  }
-
-  static async findById(id) {
-    this.conn = await pool.getConnection();
-    return this.conn.query('SELECT * FROM products WHERE products.id = ?', [id]);
-  }
-}
+module.exports = Product;
