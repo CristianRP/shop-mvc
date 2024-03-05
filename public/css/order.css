@@ -1,0 +1,28 @@
+.orders {
+  list-style: none;
+  padding: 0;
+  box-shadow: 0 2px 8px gray;
+}
+
+.orders__item {
+  padding: 1px;
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.orders__item h1 {
+  font-size: 1rem;
+}
+
+.orders__products {
+  list-style: none;
+  padding: 0;
+  padding: 0 1rem 1rem 0;
+}
+
+.orders__products-item {
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #00695c;
+  color: #00695c;
+}

@@ -59,17 +59,50 @@ class User {
       })
       .catch(console.error);
   }
-  
+
   deleteItemFromCart(productId) {
     const db = getDb();
 
     const newItems = this.cart.items.filter(item => item.productId.toString() !== productId.toString());
-    
+
     return db.collection('users')
       .updateOne(
         { _id: this._id },
-        { $set: { cart: { items: newItems } }}
+        { $set: { cart: { items: newItems } } }
       );
+  }
+
+  addOrder() {
+    const db = getDb();
+
+    return this.getCart()
+      .then(products => {
+        const order = {
+          items: products,
+          user: {
+            _id: this._id,
+            name: this.name
+          }
+        }
+        return db.collection('orders').insertOne(order)
+      })
+      .then(result => {
+        this.cart = { items: [] };
+        return db
+          .collection('users')
+          .updateOne(
+            { _id: this._id },
+            { $set: { cart: this.cart } }
+          );
+      })
+      .catch(console.error);
+  }
+
+  getOrders() {
+    const db = getDb()
+
+    return db.collection('orders')
+      .find({ 'user._id': this._id }).toArray();
   }
 
   static findById(userId) {
