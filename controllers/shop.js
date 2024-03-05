@@ -22,7 +22,7 @@ exports.getProduct = (req, res, next) => {
         product,
       });
     })
-    .catch(console.err);
+    .catch(console.error);
 }
 
 exports.getIndex = (req, res, next) => {
@@ -34,7 +34,7 @@ exports.getIndex = (req, res, next) => {
         path: '/',
       });
     })
-    .catch(console.err);
+    .catch(console.error);
 }
 
 exports.getCart = (req, res, next) => {
@@ -49,7 +49,7 @@ exports.getCart = (req, res, next) => {
         products
       });
     })
-    .catch(console.err);
+    .catch(console.error);
 }
 
 exports.postCart = (req, res, next) => {
@@ -75,7 +75,7 @@ exports.postCart = (req, res, next) => {
     .then(() => {
       res.redirect('/cart');
     })
-    .catch(console.err);
+    .catch(console.error);
 }
 
 exports.postCartDeleteItem = (req, res, next) => {
@@ -92,7 +92,7 @@ exports.postCartDeleteItem = (req, res, next) => {
     .then(result => {
       res.redirect('/cart')
     })
-    .catch(console.err);
+    .catch(console.error);
 }
 
 exports.getCheckout = (req, res, next) => {
@@ -111,7 +111,7 @@ exports.getOrders = (req, res, next) => {
         orders
       });
     })
-    .catch(console.err);
+    .catch(console.error);
 }
 
 exports.postOrder = (req, res, next) => {
@@ -129,7 +129,7 @@ exports.postOrder = (req, res, next) => {
             return product;
           }));
         })
-        .catch(console.err);
+        .catch(console.error);
     })
     .then(result => {
       return fetchedCart.setProducts(null);
@@ -137,5 +137,5 @@ exports.postOrder = (req, res, next) => {
     .then(result => {
       res.redirect('/orders');
     })
-    .catch(console.err);
+    .catch(console.error);
 }
