@@ -2,9 +2,9 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const { connect } = require('mongoose');
 
 const errorController = require('./controllers/error');
-const { mongoConnect } = require('./util/database');
 const User = require('./models/user');
 
 const app = express();
@@ -18,9 +18,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('65e72a10299f1c341a5c201a')
+  User.findById('65e75b975521cfe3e3be916d')
     .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       next();
     })
     .catch(console.error);
@@ -31,6 +31,23 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+connect('mongodb+srv://cristianramirezgt:291fWV8RTsNeQPtc@clusternodejs.u8wma2f.mongodb.net/shop?retryWrites=true&w=majority&appName=ClusterNodeJS')
+  .then(result => {
+    return User.findOne().then(user => {
+      if (!user) {
+        const newUser = new User({
+          name: 'Cristian',
+          email: 'cristian@email.com',
+          cart: {
+            items: []
+          }
+        });
+        return newUser.save();
+      }
+      return user;
+    });
+  })
+  .then(() => {
+    app.listen(3000);
+  })
+  .catch(console.error);

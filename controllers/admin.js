@@ -12,14 +12,14 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
-  const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    null,
-    req.user._id
-  );
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+    userId: req.user
+  });
+
   product.save()
     .then(() => {
       res.redirect('/products');
@@ -38,6 +38,10 @@ exports.getEditProduct = (req, res, next) => {
 
   Product.findById(productId)
     .then(product => {
+      if (!product) {
+        res.redirect('/');
+      }
+
       res.render('admin/edit-product', {
         pageTitle: 'Edit Product',
         path: '/admin/add-product',
@@ -51,21 +55,25 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   const { productId, title, price, imageUrl, description } = req.body;
 
-  const product = new Product(title, price, description, imageUrl, productId);
-
-  product.save()
-    .then(result => {
-      console.log(result);
+  Product.findById(productId)
+    .then(product => {
+      product.title = title;
+      product.price = price;
+      product.imageUrl = imageUrl;
+      product.description = description;    
+      return product.save();
+    })
+    .then(() => {
       res.redirect('/admin/products');
     })
-    .catch(console.error)
+    .catch(console.error);
 };
 
 exports.deleteProduct = (req, res, next) => {
   console.log("DELETE");
   const { productId } = req.params;
 
-  Product.deleteById(productId)
+  Product.findByIdAndDelete(productId)
     .then(() => {
       console.log('destroyed product', productId);
       res.redirect('/admin/products');
@@ -74,10 +82,13 @@ exports.deleteProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then((products) => {
+  Product.find()
+    // .select('title price -_id') select and exclude with "-"
+    // .populate('userId', 'name')
+    .then(products => {
+      console.log(products);
       res.render('admin/products', {
-        products: products,
+        products,
         pageTitle: 'Admin Products',
         path: '/admin/products',
       });
