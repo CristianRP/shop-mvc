@@ -61,6 +61,7 @@ connect(MONGODB_URI)
         const newUser = new User({
           name: 'Cristian',
           email: 'cristian@email.com',
+          password: '123',
           cart: {
             items: []
           }
