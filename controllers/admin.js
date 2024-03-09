@@ -1,13 +1,11 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
-  console.log('Users middleware');
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
     product: null,
-    isAuthenticated: req.session.isLoggedIn
   })
 };
 
@@ -19,7 +17,6 @@ exports.postAddProduct = (req, res, next) => {
     description: description,
     imageUrl: imageUrl,
     userId: req.user,
-    isAuthenticated: req.session.isLoggedIn
   });
 
   product.save()
@@ -49,7 +46,6 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/add-product',
         editing: edit,
         product,
-        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(console.error);
@@ -94,7 +90,6 @@ exports.getProducts = (req, res, next) => {
         products,
         pageTitle: 'Admin Products',
         path: '/admin/products',
-        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(console.error);

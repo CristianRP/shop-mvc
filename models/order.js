@@ -14,6 +14,9 @@ const orderSchema = new Schema({
   user: {
     name: {
       type: String,
+    },
+    email: {
+      type: String,
       required: true
     },
     userId: {
