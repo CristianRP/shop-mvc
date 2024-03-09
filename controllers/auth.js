@@ -1,6 +1,22 @@
 const bcrypt = require('bcryptjs');
+const { createTransport } = require('nodemailer')
+const postMarkTransport = require('nodemailer-postmark-transport');
 
 const User = require('../models/user');
+
+const transport = createTransport(postMarkTransport({
+  auth: {
+    apiKey: '3aa33b29-f7ea-4da7-a47b-18ec83299790'
+  }
+}));
+
+const mail = {
+  from: 'cristian.ramirez@mayan-tech.com',
+  to: 'cristian.ramirez@mayan-tech.com',
+  subject: 'Hello from NodeJS',
+  text: 'Hello',
+  html: '<h1>Hello from NodeJS</h1>'
+}
 
 exports.getLogin = (req, res, next) => {
   console.log(req.session);
@@ -74,6 +90,9 @@ exports.postSignup = (req, res, next) => {
         cart: { items: [] }
       });
       return newUser.save();
+    })
+    .then(() => {
+      return transport.sendMail(mail);
     })
     .then(() => {
       res.redirect('/login');
