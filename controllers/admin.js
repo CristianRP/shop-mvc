@@ -56,6 +56,10 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findById(productId)
     .then(product => {
+      if (product.userId.toString() !== req.user._id.toString()) {
+        throw new Error('User without permissions');
+      }
+
       product.title = title;
       product.price = price;
       product.imageUrl = imageUrl;
@@ -65,14 +69,16 @@ exports.postEditProduct = (req, res, next) => {
     .then(() => {
       res.redirect('/admin/products');
     })
-    .catch(console.error);
+    .catch(error => {
+      res.redirect('/');
+    });
 };
 
 exports.deleteProduct = (req, res, next) => {
   console.log("DELETE");
   const { productId } = req.params;
 
-  Product.findByIdAndDelete(productId)
+  Product.findOneAndDelete({ _id: productId, userId: req.user._id })
     .then(() => {
       console.log('destroyed product', productId);
       res.redirect('/admin/products');
@@ -81,6 +87,7 @@ exports.deleteProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
+  // Product.find({ userId: req.user._id })
   Product.find()
     // .select('title price -_id') select and exclude with "-"
     // .populate('userId', 'name')
