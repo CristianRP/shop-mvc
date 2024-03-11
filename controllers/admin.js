@@ -1,5 +1,7 @@
 const { validationResult } = require('express-validator');
 
+const fileHelper = require('../util/file');
+
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -123,9 +125,13 @@ exports.postEditProduct = (req, res, next) => {
         throw new Error('User without permissions');
       }
 
+      if (image) {
+        fileHelper.deleteFile(product.imageUrl);
+        product.imageUrl = image.path;
+      }
+
       product.title = title;
       product.price = price;
-      product.imageUrl = image ? image.path : product.imageUrl;
       product.description = description;    
       return product.save();
     })
@@ -145,7 +151,8 @@ exports.deleteProduct = (req, res, next) => {
   const { productId } = req.params;
 
   Product.findOneAndDelete({ _id: productId, userId: req.user._id })
-    .then(() => {
+    .then((product) => {
+      fileHelper.deleteFile(product.imageUrl);
       console.log('destroyed product', productId);
       res.redirect('/admin/products');
     })
