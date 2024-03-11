@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const Order = require('../models/order');
 const Product = require('../models/product');
 
@@ -58,6 +61,7 @@ exports.getCart = (req, res, next) => {
       });
     })
     .catch(err => {
+      console.log(err);
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
@@ -146,5 +150,30 @@ exports.postOrder = (req, res, next) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
+    });
+}
+
+exports.getInvoice = (req, res, next) => {
+  const { orderId } = req.params;
+  Order.findById(orderId)
+    .then(order => {
+      if (!order) {
+        return next(new Error('No order found.'));
+      }
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        return next(new Error('Unauthorized'));
+      }
+
+      const invoiceName = 'invoice-' + orderId + '.pdf';
+      const invoicePath = path.join('data', 'invoices', invoiceName);
+    
+      fs.readFile(invoicePath, (err, data) => {
+        if (err) {
+          return next(err);
+        }
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`)
+        res.send(data);
+      });
     });
 }
