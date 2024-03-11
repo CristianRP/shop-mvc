@@ -23,6 +23,7 @@
 }
 
 .form-control
-input.invalid {
+input.invalid,
+textarea.invalid {
   border-color: red;
 }
