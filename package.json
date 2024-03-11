@@ -28,6 +28,7 @@
     "nodemailer": "^6.9.12",
     "nodemailer-postmark-transport": "^6.0.0",
     "pdfkit": "^0.14.0",
-    "sequelize": "^6.37.1"
+    "sequelize": "^6.37.1",
+    "stripe": "^14.20.0"
   }
 }
