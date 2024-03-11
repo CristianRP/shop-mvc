@@ -10,8 +10,8 @@ exports.getProducts =  (req, res, next) => {
         path: '/',
       });
     })
-    .catch(error => {
-      const error = new Error(error);
+    .catch(err => {
+      const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
@@ -39,8 +39,8 @@ exports.getIndex = (req, res, next) => {
         path: '/'
       });
     })
-    .catch(error => {
-      const error = new Error(error);
+    .catch(err => {
+      const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
@@ -57,8 +57,8 @@ exports.getCart = (req, res, next) => {
         products: cart.items,
       });
     })
-    .catch(error => {
-      const error = new Error(error);
+    .catch(err => {
+      const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
@@ -74,8 +74,8 @@ exports.postCart = (req, res, next) => {
       console.log(result);
       res.redirect('/cart');
     })
-    .catch(error => {
-      const error = new Error(error);
+    .catch(err => {
+      const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
@@ -89,8 +89,8 @@ exports.postCartDeleteItem = (req, res, next) => {
     .then(result => {
       res.redirect('/cart')
     })
-    .catch(error => {
-      const error = new Error(error);
+    .catch(err => {
+      const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
@@ -112,8 +112,8 @@ exports.getOrders = (req, res, next) => {
         orders,
       });
     })
-    .catch(error => {
-      const error = new Error(error);
+    .catch(err => {
+      const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
@@ -142,8 +142,8 @@ exports.postOrder = (req, res, next) => {
     .then(() => {
       res.redirect('/orders');
     })
-    .catch(error => {
-      const error = new Error(error);
+    .catch(err => {
+      const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });

@@ -232,8 +232,8 @@ exports.postNewPassword = (req, res, next) => {
           res.redirect('/products');
         });
     })
-    .catch(error => {
-      const error = new Error(error);
+    .catch(err => {
+      const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
