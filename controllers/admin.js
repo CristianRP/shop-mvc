@@ -43,7 +43,22 @@ exports.postAddProduct = (req, res, next) => {
     .then(() => {
       res.redirect('/products');
     })
-    .catch(console.error);
+    .catch(error => {
+      // return res.status(500).render('admin/edit-product', {
+      //   pageTitle: 'Add Product',
+      //   path: '/admin/add-product',
+      //   editing: false,
+      //   hasError: true,
+      //   product: { title, imageUrl, price, description },
+      //   errorMessage: 'Database operation failed, please try again.',
+      //   validationErrors: []
+      // });
+      // res.redirect('/500');
+      // const error = new Error('Creating a product failed.');
+      const error = new Error(error);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -71,7 +86,11 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: []
       });
     })
-    .catch(console.error);
+    .catch(error => {
+      const error = new Error(error);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -108,7 +127,9 @@ exports.postEditProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(error => {
-      res.redirect('/');
+      const error = new Error(error);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -121,7 +142,11 @@ exports.deleteProduct = (req, res, next) => {
       console.log('destroyed product', productId);
       res.redirect('/admin/products');
     })
-    .catch(console.error);
+    .catch(error => {
+      const error = new Error(error);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
 
 exports.getProducts = (req, res, next) => {
@@ -137,5 +162,9 @@ exports.getProducts = (req, res, next) => {
         path: '/admin/products',
       });
     })
-    .catch(console.error);
+    .catch(error => {
+      const error = new Error(error);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 }
