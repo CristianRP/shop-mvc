@@ -4,3 +4,5 @@ data/invoices/
 
 .DS_Store
 nodemon.json
+server.cert
+server.key
