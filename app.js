@@ -14,7 +14,7 @@ const multer = require('multer');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
-const MONGODB_URI = 'mongodb+srv://cristianramirezgt:291fWV8RTsNeQPtc@clusternodejs.u8wma2f.mongodb.net/shop?retryWrites=true&w=majority&appName=ClusterNodeJS';
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@clusternodejs.u8wma2f.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority&appName=ClusterNodeJS`;
 
 const app = express();
 const store = new MongoDBStore({
@@ -104,23 +104,7 @@ app.use((error, req, res, next) => {
 });
 
 connect(MONGODB_URI)
-  .then(result => {
-    return User.findOne().then(user => {
-      if (!user) {
-        const newUser = new User({
-          name: 'Cristian',
-          email: 'cristian@email.com',
-          password: '123',
-          cart: {
-            items: []
-          }
-        });
-        return newUser.save();
-      }
-      return user;
-    });
-  })
   .then(() => {
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
   })
   .catch(console.error);
