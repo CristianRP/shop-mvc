@@ -9,7 +9,7 @@ const User = require('../models/user');
 
 const transport = createTransport(postMarkTransport({
   auth: {
-    apiKey: '3aa33b29-f7ea-4da7-a47b-18ec83299790'
+    apiKey: 'API_KEY'
   }
 }));
 
